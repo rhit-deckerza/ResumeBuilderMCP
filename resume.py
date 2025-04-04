@@ -104,25 +104,7 @@ def build_user_context():
 def initialize_sample_context():
     if not os.listdir(USER_CONTEXT_DIR):
         # Create sample context file
-        sample_context = """
-John Doe is an experienced software engineer with expertise in Python, JavaScript, and cloud computing.
-
-SKILLS:
-Python
-JavaScript
-Cloud Computing
-React
-Node.js
-SQL
-Docker
-
-CAREER GOALS:
-Looking to transition into a leadership role in software engineering.
-
-TARGET POSITIONS:
-Senior Software Engineer
-Tech Lead
-Engineering Manager
+        sample_context = """NO CONTEXT
 """
         with open(os.path.join(USER_CONTEXT_DIR, "context.txt"), "w") as f:
             f.write(sample_context.strip())

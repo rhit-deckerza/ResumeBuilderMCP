@@ -1,107 +1,42 @@
 # MyMCP Resume Builder
 
-An intelligent resume builder that combines a JSON-based resume editor with AI assistance to help you create, format, and optimize professional resumes.
+A personal project leveraging Model Context Protocol (MCP) servers to create an intelligent resume builder that helps me optimize my job applications through structured JSON and automated PDF generation.
 
 ## Overview
 
-MyMCP Resume Builder allows you to create and manage your resumes in a structured JSON format, while providing AI-powered suggestions to improve content and formatting. The system includes both a Python backend service for resume processing and a React-based web interface.
+I built MyMCP Resume Builder to experiment with Model Context Protocol servers while creating a useful tool for my job hunt. The system is essentially a well-crafted prompt combined with tools that allow LLMs to intelligently modify resumes through a structured JSON format, then export them to PDF using a hand-crafted Cornell-style HTML template.
 
-## Features
+The core concept is simple but powerful: maintain your resume as a structured data object (JSON) that can be easily manipulated by AI systems, while ensuring consistent, professional formatting through a purpose-built HTML-to-PDF converter.
 
-### Core Features
-- **JSON-Based Resume Editor**: Edit your resume using a structured JSON format with syntax highlighting and validation
-- **Live Preview**: See changes to your resume in real-time with a professional layout
-- **PDF Export**: Generate a professionally formatted PDF of your resume
-- **Multiple Resume Versions**: Create and manage multiple versions of your resume for different job applications
-- **Auto-Save**: Changes are automatically saved to prevent data loss
+## How It Works
 
-### AI Assistant
-- **AI-Powered Resume Improvements**: Get suggestions to enhance your resume content
-- **Resume Analysis**: Receive feedback on your resume's strengths and weaknesses
-- **Job-Specific Tailoring**: Customize your resume for specific job postings
-- **Format Optimization**: Ensure your resume follows best practices for formatting
+1. Your resume data is stored as a structured JSON object
+2. You interact with the AI through natural language prompts
+3. The AI can read, analyze, and suggest modifications to your resume JSON
+4. Once satisfied, the JSON is converted to a professionally formatted PDF using a custom Cornell-style template
 
-### Advanced Features
-- **Context Uploads**: Upload job descriptions or other context files to improve AI assistance
-- **Bold Text Formatting**: Highlight important information using Markdown-style bold formatting
-- **Coursework Section**: Include relevant coursework in education entries
-- **Structured Skills Format**: Organize skills by category for better readability
+## Using with MCP-Compatible Applications
 
-## Installation
+This tool works with any application that supports Model Context Protocol (MCP), allowing you to leverage AI assistance for resume optimization. For the best experience:
 
-### Prerequisites
-- Python 3.8+
-- Node.js 14+ and npm/yarn
-- Internet connectivity for AI features
+1. Use an MCP-compatible application with good HTML rendering support
+2. Choose faster models like Gemini 2.0 Flash for real-time interactions
+3. The HTML-to-PDF conversion works across platforms thanks to html2pdf.js
 
-### Backend Setup
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/MyMCP-Resume.git
-   cd MyMCP-Resume
-   ```
+## User Context
 
-2. Create a Python virtual environment:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+You can customize the AI's understanding of your background and preferences by adding a `context.txt` file in the user context folder. This file should contain:
 
-3. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+- Your career objectives and target roles
+- Industry-specific terminology relevant to your field
+- Preferences for resume style and emphasis
+- Special formatting requirements
 
-4. Run the backend server:
-   ```
-   python resume.py
-   ```
+The AI will use this context to provide more tailored recommendations when helping you optimize your resume content and structure.
 
-### Frontend Setup
-1. Navigate to the frontend directory:
-   ```
-   cd frontend
-   ```
+## Resume JSON Structure
 
-2. Install dependencies:
-   ```
-   npm install
-   ```
-
-3. Start the development server:
-   ```
-   npm run dev
-   ```
-
-4. Open your browser and navigate to:
-   ```
-   http://localhost:3000
-   ```
-
-## Usage
-
-### Creating Your First Resume
-
-1. Start with a sample template or create a new resume from scratch
-2. Fill in your personal information, education, experience, projects, and skills
-3. Use the AI assistant to request improvements or suggestions
-4. Export your resume as a PDF when finished
-
-### Using the AI Assistant
-
-1. Type your question or request in the chat box
-2. The AI will analyze your resume and provide suggestions
-3. Review suggestions in the diff viewer
-4. Apply or reject changes as needed
-
-### Managing Multiple Versions
-
-1. Create different versions for different job applications
-2. Switch between versions using the sidebar
-3. Duplicate and modify existing resumes for new applications
-4. Each version is saved separately with its own history
-
-### Resume JSON Structure
+The resume is stored in a standardized JSON format that captures all the essential elements:
 
 ```json
 {
@@ -158,50 +93,18 @@ MyMCP Resume Builder allows you to create and manage your resumes in a structure
 }
 ```
 
-## Formatting Guidelines
+## Formatting Features
 
-### Bold Text
-- Bold text is created by surrounding text with double asterisks: `**bold text**`
-- Project names should have the title bolded but not technologies in parentheses
-- Publication titles should be completely bolded
-- Experience bullet points typically don't use bolding unless specifically emphasizing metrics
-- Institution names in education may be bolded
+- **Bold Text**: Use double asterisks for emphasis: `**bold text**` 
+- **Cornell-Style Layout**: Clean, academic formatting inspired by Cornell University's resume templates
+- **PDF Export**: High-quality, consistent PDF output regardless of device or browser
+- **Responsive Design**: Proper spacing and layout that maintains professionalism
 
-### Resume Sections
-- **Personal Information**: Always include name, location, phone, and email
-- **Education**: List degrees in reverse chronological order, with optional coursework
-- **Technical Skills**: Group by category (Languages, Frameworks, Tools, etc.)
-- **Experience**: Focus on accomplishments with quantifiable results
-- **Projects**: Highlight technical complexity and problem-solving
-- **Publications**: Include formal citations and brief descriptions
+## Why This Approach?
 
-## Architecture
+1. **Separation of Content and Presentation**: By keeping resume data in JSON, I can focus on content quality while ensuring consistent formatting
+2. **AI-Friendly Structure**: The structured format makes it easy for LLMs to understand and modify specific parts of the resume
+3. **Version Control**: JSON files can be easily tracked with version control systems
+4. **Tailored Applications**: I can quickly create job-specific versions by modifying the JSON and regenerating the PDF
 
-The application consists of:
-
-1. **Python Backend**:
-   - FastMCP server for AI interactions
-   - PDF generation and text processing
-   - Resume validation and formatting
-
-2. **React Frontend**:
-   - Monaco code editor for JSON editing
-   - MUI components for UI
-   - Resume preview and formatting
-   - AI chat interface
-
-## Technologies Used
-
-- **Backend**: Python, FastMCP, PyPDF2, python-docx
-- **Frontend**: React, TypeScript, Material-UI, Monaco Editor
-- **PDF Generation**: html2canvas, jsPDF
-- **AI Integration**: OpenAI API
-
-## License
-
-[MIT License](LICENSE)
-
-## Acknowledgments
-
-- The project uses the [FastMCP](https://github.com/fastmcp) framework for AI interactions
-- Resume templates inspired by best practices in professional resume design
+This project demonstrates how LLMs can be effective tools for personal productivity when given the right interfaces and data structures to work with. It's a practical exploration of AI-assisted content creation within a controlled, structured environment.
