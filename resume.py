@@ -4,6 +4,7 @@ import io
 import PyPDF2
 from docx import Document
 from mcp.server.fastmcp import FastMCP
+from resume_compiler import validate_resume_json, compile_resume
 
 # Define directories
 RESUME_DIR = "resumes"
@@ -24,136 +25,6 @@ TEXT_EXTENSIONS = {
     ".scss", ".c", ".cpp", ".h", ".hpp", ".java", ".cs", ".json", ".xml",
     ".yaml", ".yml", ".md", ".sh", ".rb", ".go", ".rs", ".php"
 }
-
-# Resume validation function
-def validate_resume_json(resume_data):
-    """
-    Validates that the resume JSON has the correct format according to ResumeBuilder requirements.
-    
-    Args:
-        resume_data: Dictionary or JSON string containing resume data
-    
-    Returns:
-        tuple: (is_valid, error_message)
-            - is_valid (bool): True if the resume is valid, False otherwise
-            - error_message (str): Description of the validation error if any, empty string if valid
-    """
-    # If a string is provided, try to parse it as JSON
-    if isinstance(resume_data, str):
-        try:
-            resume_data = json.loads(resume_data)
-        except json.JSONDecodeError as e:
-            return False, f"Invalid JSON format: {str(e)}"
-    
-    # Check if resume_data is a dictionary
-    if not isinstance(resume_data, dict):
-        return False, "Resume data must be a JSON object (dictionary)"
-    
-    # Required fields for a valid resume
-    required_fields = ['name', 'location', 'phone', 'email']
-    
-    # Check all required fields are present
-    for field in required_fields:
-        if field not in resume_data:
-            return False, f"Missing required field: '{field}'"
-        
-        # Check that required fields are strings and not empty
-        if not isinstance(resume_data[field], str) or not resume_data[field].strip():
-            return False, f"Field '{field}' must be a non-empty string"
-    
-    # Validate optional array fields
-    array_fields = {
-        'technicalSkills': str,
-        'education': dict,
-        'experience': dict,
-        'projects': dict,
-        'publications': dict
-    }
-    
-    for field, expected_type in array_fields.items():
-        if field in resume_data:
-            if not isinstance(resume_data[field], list):
-                return False, f"Field '{field}' must be an array"
-            
-            # Check array elements
-            for i, item in enumerate(resume_data[field]):
-                if not isinstance(item, expected_type):
-                    return False, f"Item {i} in '{field}' must be a {expected_type.__name__}"
-    
-    # Validate education structure
-    if 'education' in resume_data:
-        education_required = ['institution', 'location', 'graduationDate', 'degree']
-        for i, edu in enumerate(resume_data['education']):
-            for field in education_required:
-                if field not in edu:
-                    return False, f"Education item {i} is missing required field: '{field}'"
-            
-            # Validate coursework if present
-            if 'coursework' in edu:
-                if not isinstance(edu['coursework'], list):
-                    return False, f"'coursework' in education item {i} must be an array"
-                
-                # Check that all coursework items are strings
-                for j, course in enumerate(edu['coursework']):
-                    if not isinstance(course, str):
-                        return False, f"Course {j} in education item {i} must be a string"
-    
-    # Validate experience structure
-    if 'experience' in resume_data:
-        experience_required = ['title', 'company', 'location', 'dateRange']
-        for i, exp in enumerate(resume_data['experience']):
-            for field in experience_required:
-                if field not in exp:
-                    return False, f"Experience item {i} is missing required field: '{field}'"
-            
-            # Check bullets field
-            if 'bullets' in exp and not isinstance(exp['bullets'], list):
-                return False, f"'bullets' in experience item {i} must be an array"
-            
-            # Validate all bullets are strings if they exist
-            if 'bullets' in exp and isinstance(exp['bullets'], list):
-                for j, bullet in enumerate(exp['bullets']):
-                    if not isinstance(bullet, str):
-                        return False, f"Bullet {j} in experience item {i} must be a string"
-    
-    # Validate projects structure
-    if 'projects' in resume_data:
-        project_required = ['name', 'dateRange']
-        for i, proj in enumerate(resume_data['projects']):
-            for field in project_required:
-                if field not in proj:
-                    return False, f"Project item {i} is missing required field: '{field}'"
-            
-            # Check bullets field
-            if 'bullets' in proj and not isinstance(proj['bullets'], list):
-                return False, f"'bullets' in project item {i} must be an array"
-            
-            # Validate all bullets are strings if they exist
-            if 'bullets' in proj and isinstance(proj['bullets'], list):
-                for j, bullet in enumerate(proj['bullets']):
-                    if not isinstance(bullet, str):
-                        return False, f"Bullet {j} in project item {i} must be a string"
-    
-    # Validate publications structure
-    if 'publications' in resume_data:
-        publication_required = ['title', 'citation']
-        for i, pub in enumerate(resume_data['publications']):
-            for field in publication_required:
-                if field not in pub:
-                    return False, f"Publication item {i} is missing required field: '{field}'"
-            
-            # Check bullets field
-            if 'bullets' in pub and not isinstance(pub['bullets'], list):
-                return False, f"'bullets' in publication item {i} must be an array"
-            
-            # Validate all bullets are strings if they exist
-            if 'bullets' in pub and isinstance(pub['bullets'], list):
-                for j, bullet in enumerate(pub['bullets']):
-                    if not isinstance(bullet, str):
-                        return False, f"Bullet {j} in publication item {i} must be a string"
-    
-    # If all checks pass, the resume is valid
-    return True, ""
 
 # Text extraction functions
 def read_text_file(file_path):
@@ -303,6 +174,25 @@ def validate_json(json_input):
         }
 
 @mcp.tool()
+def compile_resume_tool(json_input):
+    """Validate a JSON resume and compile it into a single HTML file if valid
+    
+    This tool first validates if the JSON resume meets all requirements, then
+    generates an HTML representation matching what the ResumeBuilder component displays.
+    
+    Args:
+        json_input: A resume in JSON format (string or dictionary)
+        
+    Returns:
+        A dictionary containing:
+        - valid (bool): Whether the JSON is valid
+        - message (str): Validation message if invalid
+        - html (str): The compiled HTML if valid
+    """
+    # Use the imported compile_resume function from resume_compiler.py
+    return compile_resume(json_input)
+
+@mcp.tool()
 def get_user_context():
     """Retrieve context information for the user from context.txt file"""
     context = build_user_context()
@@ -315,7 +205,7 @@ def get_user_context():
 # --- Prompt Implementation ---
 
 @mcp.prompt()
-def resume_edit_prompt(resume_json: str = None, instructions: str = None):
+def resume_edit_prompt():
     """Create a prompt for editing a resume"""
     system_instructions = """
 You are an AI assistant specifically designed to help users improve their résumés. 
@@ -425,6 +315,9 @@ To ensure the resume will compile correctly, your JSON MUST follow these rules:
 
 Any deviation from these rules will cause validation to fail and the resume won't compile.
 
+ADDITIONAL FEATURES:
+You can also compile the resume to HTML format using the compile_resume_tool tool. This will generate a formatted HTML preview of how the resume will look when printed. ONLY use this feature when the user explicitly requests to see the formatted resume, and ALWAYS ask before compiling to HTML.
+
 If you're having trouble with the JSON formatting, you can use the validate_json tool to check if your JSON is properly formatted, ONLY USE IF THE USER EXPLICITLY REQUESTS IT
 """
     
@@ -436,6 +329,7 @@ AVAILABLE TOOLS:
 
 1. 'get_user_context' to fetch background information about the user
 2. 'validate_json' to check if your JSON is properly formatted, ONLY USE IF THE USER EXPLICITLY REQUESTS IT
+3. 'compile_resume_tool' to generate an HTML preview of the resume, ONLY USE WHEN EXPLICITLY REQUESTED BY THE USER (ask first before using)
 """
     prompt += tools_info
     
@@ -447,30 +341,6 @@ USER CONTEXT (ONLY use information explicitly provided here, DO NOT make up addi
 {user_context}
 """
         prompt += context_info
-    
-    # Add current resume content if provided
-    if resume_json:
-        try:
-            # Try to load and format the content nicely if it's JSON
-            parsed_content = json.loads(resume_json)
-            formatted_content = json.dumps(parsed_content, indent=2)
-            prompt += f"""
-CURRENT RESUME CONTENT:
-{formatted_content}
-"""
-        except json.JSONDecodeError:
-            # If it's not valid JSON, just include it as is
-            prompt += f"""
-CURRENT RESUME CONTENT (note: this is not valid JSON):
-{resume_json}
-"""
-    
-    # Add user instructions if provided
-    if instructions:
-        prompt += f"""
-USER INSTRUCTIONS:
-{instructions}
-"""
     
     return prompt
 

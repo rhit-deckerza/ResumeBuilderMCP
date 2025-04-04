@@ -1,0 +1,500 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume</title>
+    <!-- Include html2pdf.js for PDF conversion -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @page {
+            size: letter;  /* 8.5in x 11in */
+            margin: 0.5in;
+        }
+        
+        body {
+            font-family: "EB Garamond", "Garamond", "Times New Roman", serif;
+            font-size: 10pt;
+            line-height: 1.2;
+            color: #000000;
+            margin: 0;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .resume-wrapper {
+            width: 8.5in;
+            height: 11in;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 0.5in;
+            box-sizing: border-box;
+            position: relative;
+        }
+        
+        .resume {
+            width: 7.5in;
+            margin: 0 auto;
+            padding: 0;
+            background-color: white;
+            overflow: auto;
+            height: 100%;
+        }
+        
+        .actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .download-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .pdf-notice {
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 16pt;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .contact-info {
+            margin: 3px 0;
+            font-size: 10pt;
+            line-height: 1.2;
+        }
+        
+        .contact-info span {
+            margin: 0 5px;
+        }
+        
+        .contact-info span:first-child {
+            margin-left: 0;
+        }
+        
+        .contact-info span:last-child {
+            margin-right: 0;
+        }
+        
+        /* Section */
+        .section {
+            margin-bottom: 10px;
+            page-break-inside: avoid;
+        }
+        
+        .section h2 {
+            text-transform: uppercase;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 3px;
+            margin-bottom: 6px;
+            margin-top: 0;
+            font-size: 10pt;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        /* Lists */
+        ul {
+            margin: 0;
+            padding-left: 16px;
+            list-style-type: disc;
+            font-size: 10pt;
+        }
+        
+        li {
+            margin-bottom: 1px;
+            line-height: 1.2;
+            padding-left: 4px;
+        }
+        
+        strong {
+            font-weight: 600;
+        }
+        
+        /* Technical skills */
+        .skills-container {
+            display: grid;
+            grid-template-columns: max-content 1fr;
+            grid-gap: 2px 20px;
+            width: 100%;
+        }
+        
+        .skill-category-title {
+            font-weight: 600;
+            padding-right: 5px;
+        }
+        
+        .skill-items {
+            padding-left: 0;
+        }
+        
+        /* Jobs, projects, publications */
+        .job-title, .project-title, .publication-title {
+            font-weight: normal;
+            font-size: 10pt;
+        }
+        
+        .date-range {
+            float: right;
+        }
+        
+        /* Education */
+        .education-item {
+            margin-bottom: 8px;
+            page-break-inside: avoid;
+        }
+        
+        .coursework {
+            margin-top: 0;
+            margin-bottom: 4px;
+            font-size: 9pt;
+        }
+        
+        /* Experience */
+        .experience-item {
+            margin-bottom: 4px;
+            page-break-inside: avoid;
+        }
+        
+        /* Projects */
+        .project-item {
+            margin-bottom: 6px;
+            page-break-inside: avoid;
+        }
+        
+        .project-subtitle {
+            margin-top: 1px;
+            margin-bottom: 1px;
+        }
+        
+        /* Publications */
+        .publication-item {
+            margin-bottom: 4px;
+            page-break-inside: avoid;
+        }
+        
+        /* Print specific styles */
+        @media print {
+            body {
+                padding: 0;
+                background-color: white;
+            }
+            
+            .container, .actions, .download-btn, .print-btn {
+                display: none;
+            }
+            
+            .resume-wrapper {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                height: auto;
+            }
+            
+            html, body {
+                width: 8.5in;
+                height: 11in;
+                margin: 0;
+                padding: 0.5in;
+            }
+            
+            .resume {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            
+            /* Avoid page breaks inside elements */
+            p, h2, h3 {
+                page-break-inside: avoid;
+            }
+            
+            /* Ensure sections start on a new page only if needed */
+            .section {
+                page-break-before: auto;
+            }
+            
+            /* Force page breaks where necessary */
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="actions">
+            <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+            <p class="pdf-notice">For best results, please download as PDF</p>
+        </div>
+        
+        <div class="resume-wrapper" id="resume-content">
+            <div class="resume">
+
+                <div class="header">
+                    <h1>ZACHARY DECKER</h1>
+                    <p class="contact-info">
+                        <span>New York, NY</span> | <span>714-475-8849</span> | <span>zad25@cornell.edu</span>
+                    </p>
+                    <p style="margin: 2px 0; font-size: 10pt; line-height: 1.2">https://zacharydecker.com</p>
+                </div>
+
+                <div class="section">
+                    <h2>EDUCATION</h2>
+                    <div id="educationList">
+
+                        <div class="education-item">
+                            <p style="margin-bottom: 0; margin-top: 0;">
+                                <strong>Cornell Tech (Cornell University)</strong>, New York, NY
+                                <span class="date-range">Expected May 2025</span><br>
+                                Master of Engineering in Computer Science | GPA: 4.0
+                            </p>
+
+                            <p class="coursework">
+                                Relevant Coursework: Startup Studio, Deep Learning, NLP, Machine Learning Productization
+                            </p>
+
+                        </div>
+
+                        <div class="education-item">
+                            <p style="margin-bottom: 0; margin-top: 0;">
+                                <strong>Rose-Hulman Institute of Technology</strong>, Terre Haute, IN
+                                <span class="date-range">May 2024</span><br>
+                                Bachelor of Science in Computer Science and Software Engineering | GPA: 3.71
+                            </p>
+
+                            <p class="coursework">
+                                Relevant Coursework: Deep Learning, Computer Vision, Linear Algebra, Computer Architecture, Philosophy of Mind, Optimization Methods, Operating Systems, Bio-Inspired AI, Algorithms, Software Design
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>TECHNICAL SKILLS</h2>
+                    <div id="technicalSkillsList" class="skills-container">
+
+                        <div class="skill-category-title">Languages:</div>
+                        <div class="skill-items">Python, C++, JavaScript, Java, TypeScript, SQL, C, Scala, Scheme, HTML/CSS</div>
+
+                        <div class="skill-category-title">Frameworks & Tools:</div>
+                        <div class="skill-items">PyTorch, ROS, TensorFlow, OpenCV, Git, Verilog, AWS Amplify, LangChain</div>
+
+                        <div class="skill-category-title">OS:</div>
+                        <div class="skill-items">Linux, Windows, UNIX</div>
+
+                        <div class="skill-category-title">Other:</div>
+                        <div class="skill-items">Test-Driven Development, CI/CD, Agile, Firmware, Soldering, Circuit Design</div>
+
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>EXPERIENCE</h2>
+                    <div id="experienceList">
+
+                        <div class="experience-item">
+                            <p style="margin-bottom: 0; margin-top: 0;">
+                                <strong>DEKA Research & Development</strong>, <span class="job-title">Software Engineer</span>, Manchester, NH
+                                <span class="date-range">Fall 2022 – Spring 2024</span>
+                            </p>
+
+                            <ul style="margin-top: 0;">
+
+                                <li>Designed & implemented real-time localization and mapping algorithms in C++ using ROS</li>
+
+                                <li>Achieved 10x speedup in map refresh rates</li>
+
+                                <li>Integrated terrain mapping with broader robotics pipeline in collaboration with path planning and controls teams</li>
+
+                                <li>Authored technical documentation and presented findings at company-wide engineering reviews</li>
+
+                                <li>Mentored junior engineers in advanced algorithmic approaches to robotics challenges</li>
+
+                            </ul>
+
+                        </div>
+
+                        <div class="experience-item">
+                            <p style="margin-bottom: 0; margin-top: 0;">
+                                <strong>AON Devices</strong>, <span class="job-title">Research Intern</span>, Irvine, CA
+                                <span class="date-range">Summer 2022</span>
+                            </p>
+
+                            <ul style="margin-top: 0;">
+
+                                <li>Researched transformer-based motion/speech recognition models for wearable devices</li>
+
+                                <li>Built robust data pipelines and gained hands-on experience with circuit-level integration</li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>PROJECTS</h2>
+                    <div id="projectsList">
+
+                        <div class="project-item">
+                            <p style="margin-bottom: 0; margin-top: 0;">
+                                <span class="project-title"><strong>Organize My Life</strong> (React Native, AWS Amplify)</span>
+                                <span class="date-range">Fall 2023 – Spring 2024</span>
+                            </p>
+
+                            <p class="project-subtitle">Cross-platform mobile file organization app</p>
+
+                            <ul style="margin-top: 0;">
+
+                                <li>Built serverless backend, CI/CD pipelines, and deployed scalable storage</li>
+
+                                <li>Implemented secure user authentication and file encryption</li>
+
+                                <li>Achieved 99.9% uptime through robust error handling and monitoring</li>
+
+                            </ul>
+
+                        </div>
+
+                        <div class="project-item">
+                            <p style="margin-bottom: 0; margin-top: 0;">
+                                <span class="project-title"><strong>Soccer Game Reconstruction</strong> (YOLO, PyTorch, Matlab)</span>
+                                <span class="date-range">Spring 2023</span>
+                            </p>
+
+                            <p class="project-subtitle">Reconstructed 3D player movements from 2D video</p>
+
+                            <ul style="margin-top: 0;">
+
+                                <li>Applied homography to transform visual data into tactical insights</li>
+
+                                <li>Achieved 95% accuracy in player detection and tracking</li>
+
+                                <li>Developed custom visualization tools for coaches to analyze game patterns</li>
+
+                            </ul>
+
+                        </div>
+
+                        <div class="project-item">
+                            <p style="margin-bottom: 0; margin-top: 0;">
+                                <span class="project-title"><strong>Workout Tracker</strong> (React)</span>
+                                <span class="date-range">Summer 2022</span>
+                            </p>
+
+                            <p class="project-subtitle">Led development of custom fitness app</p>
+
+                            <ul style="margin-top: 0;">
+
+                                <li>Taught teammates modern frontend frameworks</li>
+
+                                <li>Implemented offline functionality using local storage</li>
+
+                                <li>Reduced load times by 60% through code optimization</li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>PUBLICATIONS</h2>
+                    <div id="publicationsList">
+
+                        <div class="publication-item">
+                            <p style="margin-bottom: 0; margin-top: 0;">
+                                <span class="publication-title"><strong>Evolution of Developmental Strategies in NK Fitness Landscapes</strong></span>, Ashworth, J., Lee, Y., Shen, J., Kim, E., Decker, Z., & Yoder, J. (2022). ALIFE 2022: The Conference on Artificial Life, 59.
+                            </p>
+
+                            <ul style="margin-top: 0;">
+
+                                <li>Simulated organism development using NK landscapes and genotype-encoded timing strategies</li>
+
+                                <li>Showed sensitive periods emerge naturally in evolved developmental strategies</li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function downloadPDF() {
+            // Get the resume content element
+            const element = document.getElementById('resume-content');
+            
+            // Options for html2pdf
+            const options = {
+                margin: 0,
+                filename: 'resume.pdf',
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            
+            // Generate and save the PDF
+            html2pdf().set(options).from(element).save();
+        }
+    </script>
+</body>
+</html>
